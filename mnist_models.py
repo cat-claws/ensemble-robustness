@@ -81,6 +81,41 @@ class ConvNet(nn.Module):
 		output = F.log_softmax(x, dim=1)
 		return output
 	
+class LeNet(nn.Module):
+	def __init__(self):
+	super(LeNet, self).__init__()
+
+	# Convolutional layers.
+	self.conv1 = nn.Conv2d(1, 32, 5)
+	self.conv2 = nn.Conv2d(32, 64, 5)
+
+	# Linear layers.
+	self.fc1 = nn.Linear(64*4*4, 120)
+	self.fc2 = nn.Linear(120, 84)
+	self.fc3 = nn.Linear(84, 10)
+
+	def forward(self, x):
+	# Conv1 + ReLU + MaxPooling.
+	out = F.relu(self.conv1(x))
+	out = F.max_pool2d(out, 2)
+
+	# Conv2 + ReLU + MaPooling.
+	out = F.relu(self.conv2(out))
+	out = F.max_pool2d(out, 2)
+
+	# This flattens the output of the previous layer into a vector.
+	out = out.view(out.size(0), -1) 
+
+	# Linear layer + ReLU.
+	out = F.relu(self.fc1(out))
+	# Linear layer + ReLU.
+	out = F.relu(self.fc2(out))
+	# A final linear layer at the end.
+	out = self.fc3(out)
+
+	# We will not add Softmax here because nn.CrossEntropy does it.
+	# Read the documentation for nn.CrossEntropy.
+	return out
 
 class LeNet5(nn.Module):
 	def __init__(self):
